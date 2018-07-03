@@ -1,5 +1,5 @@
 //=================================================================================================
-//                    Copyright (C) 2017 Olivier Mallet - All Rights Reserved                      
+//                    Copyright (C) 2017 Olivier Mallet - All Rights Reserved
 //=================================================================================================
 
 #ifndef GENETICALGORITHM_HPP
@@ -20,35 +20,35 @@ class GeneticAlgorithm
    friend class Chromosome;
 
    template <typename K>
-   using Func = std::vector<K> (*)(const std::vector<K>&);
+   using Func = std::function<std::vector<K>(const std::vector<K>&)>;
 
 private:
    Population<T> pop;             // population of chromosomes
-   std::vector<PAR<T>> param;     // parameter(s) 
+   std::vector<PAR<T>> param;     // parameter(s)
    std::vector<T> lowerBound;     // parameter(s) lower bound
    std::vector<T> upperBound;     // parameter(s) upper bound
    std::vector<T> initialSet;     // initial set of parameter(s)
    std::vector<int> idx;          // indexes for chromosome breakdown
 
-public: 
+public:
    // objective function pointer
-   Func<T> Objective; 
-   // selection method initialized to roulette wheel selection                                   
-   void (*Selection)(Population<T>&) = RWS;  
-   // cross-over method initialized to 1-point cross-over                                
+   Func<T> Objective;
+   // selection method initialized to roulette wheel selection
+   void (*Selection)(Population<T>&) = RWS;
+   // cross-over method initialized to 1-point cross-over
    void (*CrossOver)(const Population<T>&, CHR<T>&, CHR<T>&) = P1XO;
-   // mutation method initialized to single-point mutation 
-   void (*Mutation)(CHR<T>&) = SPM;  
-   // adaptation to constraint(s) method                                        
-   void (*Adaptation)(Population<T>&) = nullptr; 
-   // constraint(s)                               
-   std::vector<T> (*Constraint)(const std::vector<T>&) = nullptr; 
+   // mutation method initialized to single-point mutation
+   void (*Mutation)(CHR<T>&) = SPM;
+   // adaptation to constraint(s) method
+   void (*Adaptation)(Population<T>&) = nullptr;
+   // constraint(s)
+   std::vector<T> (*Constraint)(const std::vector<T>&) = nullptr;
 
    T covrate = .50;   // cross-over rate
-   T mutrate = .05;   // mutation rate   
-   T SP = 1.5;        // selective pressure for RSP selection method 
+   T mutrate = .05;   // mutation rate
+   T SP = 1.5;        // selective pressure for RSP selection method
    T tolerance = 0.0; // terminal condition (inactive if equal to zero)
-                 
+
    int elitpop = 1;   // elit population size
    int matsize;       // mating pool size, set to popsize by default
    int tntsize = 10;  // tournament size
@@ -60,7 +60,7 @@ public:
    GeneticAlgorithm(Func<T> objective, int popsize, int nbgen, bool output, const Parameter<T,N>&...args);
    // run genetic algorithm
    void run();
-   // return best chromosome 
+   // return best chromosome
    const CHR<T>& result() const;
 
 private:
@@ -73,7 +73,7 @@ private:
 
    // end of recursion for initializing parameter(s) data
    template <int I = 0, int...N>
-   typename std::enable_if<I == sizeof...(N), void>::type init(const TUP<T,N...>&); 
+   typename std::enable_if<I == sizeof...(N), void>::type init(const TUP<T,N...>&);
    // recursion for initializing parameter(s) data
    template <int I = 0, int...N>
    typename std::enable_if<I < sizeof...(N), void>::type init(const TUP<T,N...>&);
@@ -85,7 +85,7 @@ private:
 };
 
 /*-------------------------------------------------------------------------------------------------*/
-   
+
 // constructor
 template <typename T> template <int...N>
 GeneticAlgorithm<T>::GeneticAlgorithm(Func<T> objective, int popsize, int nbgen, bool output, const Parameter<T,N>&...args)
@@ -109,13 +109,13 @@ GeneticAlgorithm<T>::GeneticAlgorithm(Func<T> objective, int popsize, int nbgen,
 
 // end of recursion for initializing parameter(s) data
 template <typename T> template <int I, int...N>
-inline typename std::enable_if<I == sizeof...(N), void>::type 
+inline typename std::enable_if<I == sizeof...(N), void>::type
 GeneticAlgorithm<T>::init(const TUP<T,N...>&) {}
 
 // recursion for initializing parameter(s) data
 template <typename T> template <int I, int...N>
-inline typename std::enable_if<I < sizeof...(N), void>::type 
-GeneticAlgorithm<T>::init(const TUP<T,N...>& tp) 
+inline typename std::enable_if<I < sizeof...(N), void>::type
+GeneticAlgorithm<T>::init(const TUP<T,N...>& tp)
 {
    // getting Ith parameter in tuple
    auto par = std::get<I>(tp);
@@ -170,7 +170,7 @@ void GeneticAlgorithm<T>::check() const
 }
 
 /*-------------------------------------------------------------------------------------------------*/
-   
+
 // run genetic algorithm
 template <typename T>
 void GeneticAlgorithm<T>::run()
@@ -196,9 +196,9 @@ void GeneticAlgorithm<T>::run()
    // initializing best result and previous best result
    T bestResult = pop(0)->getTotal();
    T prevBestResult = bestResult;
-   // outputting results 
+   // outputting results
    if (output) print();
-    
+
    // starting population evolution
    for (nogen = 1; nogen <= nbgen; ++nogen) {
       // evolving population
@@ -214,25 +214,25 @@ void GeneticAlgorithm<T>::run()
          }
          prevBestResult = bestResult;
       }
-   } 
+   }
 
    // outputting contraint value
    if (Constraint != nullptr) {
       // getting best parameter(s) constraint value(s)
-      std::vector<T> cst = pop(0)->getConstraint(); 
+      std::vector<T> cst = pop(0)->getConstraint();
       if (output) {
          std::cout << "\n Constraint(s)\n";
          std::cout << " -------------\n";
          for (unsigned i = 0; i < cst.size(); ++i) {
-            std::cout << " C"; 
+            std::cout << " C";
             if (nbparam > 1) {
                std::cout << std::to_string(i + 1);
             }
-            std::cout << "(x) = " << std::setw(6) << std::fixed << std::setprecision(precision) << cst[i] << "\n"; 
+            std::cout << "(x) = " << std::setw(6) << std::fixed << std::setprecision(precision) << cst[i] << "\n";
          }
-         std::cout << "\n"; 
+         std::cout << "\n";
       }
-   }   
+   }
 }
 
 /*-------------------------------------------------------------------------------------------------*/
@@ -245,7 +245,7 @@ inline const CHR<T>& GeneticAlgorithm<T>::result() const
 }
 
 /*-------------------------------------------------------------------------------------------------*/
-   
+
 // print results for each new generation
 template <typename T>
 void GeneticAlgorithm<T>::print() const
@@ -275,10 +275,10 @@ void GeneticAlgorithm<T>::print() const
             std::cout << "\n";
          }
 	   }
- 
+
    }
 }
-   
+
 //=================================================================================================
 
 }
