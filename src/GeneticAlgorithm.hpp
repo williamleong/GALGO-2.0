@@ -110,7 +110,7 @@ GeneticAlgorithm<T>::GeneticAlgorithm(Func<T> objective, int popsize, int nbgen,
 // end of recursion for initializing parameter(s) data
 template <typename T> template <int I, int...N>
 inline typename std::enable_if<I == sizeof...(N), void>::type 
-GeneticAlgorithm<T>::init(const TUP<T,N...>& tp) {}
+GeneticAlgorithm<T>::init(const TUP<T,N...>&) {}
 
 // recursion for initializing parameter(s) data
 template <typename T> template <int I, int...N>
