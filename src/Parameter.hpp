@@ -1,5 +1,5 @@
 //=================================================================================================
-//                    Copyright (C) 2017 Olivier Mallet - All Rights Reserved                      
+//                    Copyright (C) 2017 Olivier Mallet - All Rights Reserved
 //=================================================================================================
 
 #ifndef PARAMETER_H
@@ -10,21 +10,21 @@ namespace galgo {
 //=================================================================================================
 
 // end of recursion for computing the sum of a parameter pack of integral numbers
-int sum(int first) 
+inline int sum(int first)
 {
    return first;
 }
 
 // recursion for computing the sum of a parameter pack of integral numbers
 template <typename...Args>
-int sum(int first, Args...args) 
+int sum(int first, Args...args)
 {
    return first + sum(args...);
 }
 
 /*-------------------------------------------------------------------------------------------------*/
 
-// abstract base class for Parameter objects 
+// abstract base class for Parameter objects
 template <typename T>
 class BaseParameter
 {
@@ -52,7 +52,7 @@ public:
    // nullary constructor
    Parameter() {}
    // constructor
-   Parameter(const std::vector<T>& data) 
+   Parameter(const std::vector<T>& data)
    {
       if (data.size() < 2) {
          throw std::invalid_argument("Error: in class galgo::Parameter<T,N>, argument must contain at least 2 elements of type T, the lower bound and the upper bound, please adjust.");

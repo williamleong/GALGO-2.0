@@ -1,5 +1,5 @@
 //=================================================================================================
-//                    Copyright (C) 2017 Olivier Mallet - All Rights Reserved                      
+//                    Copyright (C) 2017 Olivier Mallet - All Rights Reserved
 //=================================================================================================
 
 #ifndef CONVERTER_HPP
@@ -10,7 +10,7 @@ namespace galgo {
 //=================================================================================================
 
 // convert unsigned long long integer to binary string
-std::string GetBinary(uint64_t value)
+inline std::string GetBinary(uint64_t value)
 {
    std::bitset<sizeof(uint64_t)*CHAR_BIT> bits(value);
    // NB: CHAR_BIT = number of bits in char usually 8 but not always on older machines
@@ -20,7 +20,7 @@ std::string GetBinary(uint64_t value)
 /*-------------------------------------------------------------------------------------------------*/
 
 // convert binary string to unsigned long long integer
-uint64_t GetValue(const std::string& s)
+inline uint64_t GetValue(const std::string& s)
 {
    uint64_t value, x = 0;
    for (std::string::const_iterator it = s.begin(), end = s.end(); it != end; ++it) {
